@@ -9,7 +9,10 @@
 
 <html>
     <body>
-        This is our recommendation<br> {{recommend}} 
+        This is our recommendation<br>
+		{% autoescape false %}
+			{{recommend}}
+		{% endautoescape %}
         <a href="/rating">Review</a>
     </body>
 </html>
