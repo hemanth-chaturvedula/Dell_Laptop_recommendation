@@ -103,19 +103,18 @@ def separate_unique(words):
     #print words_set
     return list(words_set)
 
-def make_vectors(words, freqs, embeddings):
+def make_vectors(review_words, freqs, unique_words, embeddings):
     review_vectors = []
-    for i in range(len(words)):
-        sum_vector = [0 for i in embeddings[0]]
+    for i in range(len(review_words)):
+        sum_vector = [0 for i in range(300)]
         count = 0
-        print(embeddings[i][0])
-        print(freqs[i])
-        for j in range(len(words[i])):
-            if(embeddings[i]!='NA'):
+        for j in range(len(review_words[i])):
+            ind = unique_words.index(review_words[i][j])
+            if(embeddings[ind]!='NA'):
                 count += int(freqs[i][j])
                 #add the vector
-                for k in range(len(embeddings[i])):
-                    sum_vector[k] += embeddings[i][k]
+                for k in range(len(embeddings[ind])):
+                    sum_vector[k] += embeddings[ind][k]
         avg_vector = [0 for i in embeddings[0]]
         for elem in sum_vector:
             if (count!=0):
@@ -146,11 +145,9 @@ if(__name__ == "__main__"):
     unique_words = separate_unique(words_p)
     #print(unique_words)
     #starting the vectorization
-    embeddings = word2vec_google_embed(words_p)
-    for x in embeddings:
-        print(x)
+    embeddings = word2vec_google_embed(unique_words)
     #embedding the reviews by frequency averaging
-    review_vectors = make_vectors(words_p, freqs_p, embeddings)
+    review_vectors = make_vectors(words_p, freqs_p, unique_words, embeddings)
     #supervised learning for classification    
     #test train split
     X_train, X_test, y_train, y_test = train_test_split(review_vectors, labels, test_size=0.20, random_state=42)
