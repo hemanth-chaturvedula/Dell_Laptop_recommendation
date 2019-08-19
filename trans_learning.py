@@ -6,6 +6,12 @@ import os.path
 from sklearn.svm import LinearSVC
 #For preprocessing
 import re
+#For tracking progress
+from tqdm import tqdm
+#For saving the model
+import pickle
+#For splitting data
+from sklearn.model_selection import train_test_split
 
 def get_data(filename):
     with open(filename) as f:
@@ -105,7 +111,8 @@ def separate_unique(words):
 
 def make_vectors(review_words, freqs, unique_words, embeddings):
     review_vectors = []
-    for i in range(len(review_words)):
+    print('Review vectors')
+    for i in tqdm(range(len(review_words))):
         sum_vector = [0 for i in range(300)]
         count = 0
         for j in range(len(review_words[i])):
@@ -150,10 +157,18 @@ if(__name__ == "__main__"):
     review_vectors = make_vectors(words_p, freqs_p, unique_words, embeddings)
     #supervised learning for classification    
     #test train split
+    print('Splitting...')
     X_train, X_test, y_train, y_test = train_test_split(review_vectors, labels, test_size=0.20, random_state=42)
     #training
+    print('Training...')
     clf = LinearSVC(random_state=0, tol=1e-5)
     clf.fit(X_train,y_train)
+    #saving the model
+    # save the model to disk
+    final_model = 'finalized_model.sav'
+    pickle.dump(model, open(filename, 'wb'))
+    # load the model from disk
+    loaded_model = pickle.load(open(filename, 'rb'))
     #testing results
     train_accuracy = clf.score(X_train, y_train)
     test_accuracy = clf.score(X_test, y_test)
