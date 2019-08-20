@@ -9,7 +9,10 @@
 
 <html>
     <body style="background-color:#A9BCF5">
-        This is our recommendation {{recommend}}
+        This is our recommendation<br>
+        {% autoescape false % }
+            {{recommend}}
+        {% endautoespace %}
         <a href="/rating">Review</a>
     </body>
 </html>
